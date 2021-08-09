@@ -7,31 +7,45 @@
   font-size: 12px;
   padding: 7px 10px 7px 10px;
 
-  &:focus{
-    outline: none;
+  transition: color .3s ease;
+
+  &:focus {
+      outline: none;
   }
 
+  &:hover {
+      color: darken($color: white, $amount: 10);
+  }
+  
 }
+
 
 .btn-primary {
   background-color: $primary;
   border-radius: 2px;
-
-  &:disabled {
-    background-color: lighten($color: $primary, $amount: 1);
-  }
-
   
-  &:hover{
-    background-color: darken($color: $primary, $amount: 20)
+  &:disabled {
+      background-color: lighten($color: $primary, $amount: 15);
   }
 
+  &:hover { 
+      background-color: darken($color: $primary, $amount: 15);
+  }
 }
 
-.btn-block{
+.btn-danger {
+  background-color: red;
+
+  transition: background-color .3s ease;
+
+  &:hover {
+      background-color: darken($color: red, $amount: 10);
+  }
+}
+
+.btn-block {
   width: 100%;
 }
-
 
 .google-btn {
   cursor: pointer;

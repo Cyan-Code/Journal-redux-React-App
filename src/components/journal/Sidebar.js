@@ -1,11 +1,12 @@
 import React from 'react'
+import { JournarlEntries } from './JournarlEntries'
 
 export const Sidebar = () => {
   return (
     <aside className="journal__sidebar">
       
       <div className = "journal__sidebar-navbar">
-        <h3>
+        <h3 className="mt-5">
           <i className="far fa-moon"></i>
           <span> Luis</span>
         </h3>
@@ -20,7 +21,7 @@ export const Sidebar = () => {
           New Entry
         </p>
       </div>
-
+      <JournarlEntries />
     </aside>
   )
 }
