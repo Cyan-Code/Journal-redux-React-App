@@ -2,10 +2,14 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from '../../hooks/useForm'
 import validator from 'validator';
+import { useDispatch } from 'react-redux';
+import { uiRemoveError, uiSetError } from '../../actions/uiState';
 
 export const RegisterScreen = () => {
 
-  const [formValues, handleInputChange, reset] = useForm({
+  const dispatch = useDispatch()
+
+  const [formValues, handleInputChange, ] = useForm({
     name: 'Luis',
     email: 'Luis@gmail',
     password: '123',
@@ -26,16 +30,16 @@ export const RegisterScreen = () => {
   const isFormValid = () => {
 
     if(name.trim().length === 0){
-      console.log('name is required');
+      dispatch(uiSetError('name is required'))
       return false;
     } else if (!validator.isEmail( email )) {
-      console.log('email is not email');
+      dispatch(uiSetError('email is not email'))
       return false
     } else if (password !== password2 || password.length < 5) {
-      console.log('Jummm, wron password');
+      dispatch(uiSetError('password is wrong'))
       return false
     }
-
+    dispatch( uiRemoveError() )
     return true;
   };
 
