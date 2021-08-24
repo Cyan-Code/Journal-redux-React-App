@@ -1,5 +1,5 @@
 import { firebase } from '../firebase/firebase-config';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,17 +15,29 @@ import { login } from '../actions/auth';
 
 export const AppRouter = () => {
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  const [cheking, setCheking] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false) // Variable de usar para saber si se esta logeado
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
 
       if( user?.uid ){
         dispatch( login(user.uid, user.displayName))
+        setIsLoggedIn(true) // Logeado
+      } else {
+        setIsLoggedIn(false) // No logeado
       }
-    
+      setCheking(false)
     })
-  }, [dispatch])
+  }, [dispatch, setCheking])
+
+  if(cheking) {
+    return (
+      <h1>Espere . . .</h1>
+    )
+  }
 
   return (
     <Router>
