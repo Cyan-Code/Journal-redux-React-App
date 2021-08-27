@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
   Redirect
 } from "react-router-dom";
 
@@ -12,6 +11,8 @@ import { useDispatch } from 'react-redux';
 import { JournnalScreen } from '../components/journal/JournnalScreen';
 import { AuthRouter } from './AuthRouter';
 import { login } from '../actions/auth';
+import { PrivateRoute } from './PrivateRoute';
+import { PublicRoute } from './PublicRoute';
 
 export const AppRouter = () => {
 
@@ -35,7 +36,7 @@ export const AppRouter = () => {
 
   if(cheking) {
     return (
-      <h1>Espere . . .</h1>
+      <h1>Wait . . .</h1>
     )
   }
 
@@ -43,8 +44,16 @@ export const AppRouter = () => {
     <Router>
       <div>
         <Switch>
-          <Route path="/auth" component = { AuthRouter }/>
-          <Route exact path="/" component = { JournnalScreen }/>
+          <PublicRoute
+            isAuthenticated={isLoggedIn}
+            path="/auth"
+            component = { AuthRouter }
+          />
+          <PrivateRoute
+            exact path="/"
+            isAuthenticated={isLoggedIn}
+            component = { JournnalScreen }      
+          />
           <Redirect to = "/auth/login"/>
         </Switch>
       </div>
