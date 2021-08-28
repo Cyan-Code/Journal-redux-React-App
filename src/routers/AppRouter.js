@@ -13,6 +13,7 @@ import { AuthRouter } from './AuthRouter';
 import { login } from '../actions/auth';
 import { PrivateRoute } from './PrivateRoute';
 import { PublicRoute } from './PublicRoute';
+import { setarLoadingNotes } from '../actions/notes';
 
 export const AppRouter = () => {
 
@@ -27,6 +28,9 @@ export const AppRouter = () => {
       if( user?.uid ){
         dispatch( login(user.uid, user.displayName))
         setIsLoggedIn(true) // Logeado
+        
+        dispatch (setarLoadingNotes(user.uid))
+
       } else {
         setIsLoggedIn(false) // No logeado
       }
