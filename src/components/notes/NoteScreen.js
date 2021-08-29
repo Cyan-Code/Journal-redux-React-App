@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { activeNote } from '../../actions/notes'
+import { activeNote, startDeleting } from '../../actions/notes'
 import { useForm } from '../../hooks/useForm'
 import { NotesAppBar } from './NotesAppBar'
 
@@ -20,7 +20,7 @@ export const NoteScreen = () => {
    * 3. Usar el useRef, para generar un observable, que este comparando la nota activa con la que cambio
    */
   const [formValues, handleInputChange, reset] = useForm(note);
-  const {body, title} = formValues;
+  const {body, title, id} = formValues;
 
   const activeId = useRef(note.id)
 
@@ -38,6 +38,10 @@ export const NoteScreen = () => {
     dispatch( activeNote(formValues.id, {...formValues}) )
 
   },[formValues, dispatch])
+
+  const handleDelete = () => {
+    dispatch( startDeleting(id) )
+  }
 
   return (
     <div className="notes__main-content-">
@@ -64,15 +68,25 @@ export const NoteScreen = () => {
         ></textarea>
 
         {
-          (note.url) &&
-          <div className="notes__image">
-            <img
-              src="https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/130238819/original/d4096d4950eba421600f21c6c753c19375222eb6/draw-you-a-landscape-image-with-ms-paint.png"
-              alt="Una imagen"
-            />
-          </div>
+          (note.url)
+          &&
+          (
+            <div className="notes__image">
+              <img
+                src={note.url}
+                alt="Una imagen"
+              />
+            </div>
+          )
         }
       </div>
+
+      <button
+        className="btn btn-danger"
+        onClick = {handleDelete}
+      >
+        Delete
+      </button>
 
     </div>
   )

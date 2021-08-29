@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 
 import { db } from "../firebase/firebase-config";
+import { fileUpload } from '../helpers/fileUpload';
 import { loadNotes } from "../helpers/loadNotes";
 import { types } from "../types/types";
 
@@ -39,7 +40,6 @@ export const setarLoadingNotes = (uid) => {
   return async (dispatch) => {
     const notes = await loadNotes(uid)
     dispatch( setNotes(notes) )
-    console.log(notes);
   }
 }
 
@@ -76,4 +76,42 @@ export const refreshNote = (id, note) => ({
       ...note
     }
   }
+});
+
+export const startUpLoading = (file) => {
+  return async (dispatch, getState) => {
+    const {active:activeNote} = getState().notes;
+    Swal.fire({
+      title: 'Uploading...',
+      text: 'Please Wait...',
+      showConfirmButton: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    })
+    // comenzar a hacer la carga y actualizacion de la url de la imagen
+    const fileUrl = await fileUpload(file)
+    activeNote.url = fileUrl // porque funciona asi?
+
+    dispatch( startSaveNote( activeNote ) )
+
+    Swal.close(); 
+  }
+}
+
+export const startDeleting = (id) => {
+  return async (dispatch, getState) => {
+   
+    const {uid} = getState().auth; // del cliente
+    await db.doc(`${uid}/journal/notes/${id}`).delete(); // borrado de base de datos
+
+    // borrado del store
+    dispatch( deleteNote(id) );
+
+  }
+}
+
+export const deleteNote = (id) => ({
+  type: types.notesDelete,
+  payload: id
 })
