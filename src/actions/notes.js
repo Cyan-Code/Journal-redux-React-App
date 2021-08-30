@@ -19,11 +19,15 @@ export const startNewNote = () => {
 
     //Referencia a la base de datos del fireStore.config
     // Espera a que se haga la inserccion
-    const doc = await db.collection(`${uid}/journal/notes`).add( newNote )
+    try {
+      const doc = await db.collection(`${uid}/journal/notes`).add( newNote );
 
-    // enviando el documento con el id proveido por firebase al dispatch
-    dispatch( activeNote( doc.id, newNote ) )
-
+      // enviando el documento con el id proveido por firebase al dispatch
+      dispatch( activeNote( doc.id, newNote ) );
+      dispatch( addNewNote( doc.id, newNote ) )
+    } catch (error) {
+      console.log(error)
+    }
 
   }
 }
@@ -33,6 +37,13 @@ export const activeNote = (id, note) => ({
   payload:{
     id,
     ...note
+  }
+})
+
+export const addNewNote = ( id, note ) => ({
+  type: types.notesAddNew,
+  payload: {
+      id, ...note
   }
 })
 
@@ -115,3 +126,7 @@ export const deleteNote = (id) => ({
   type: types.notesDelete,
   payload: id
 })
+
+export const noteLogout = () => ({
+  type: types.notesLogoutCleaning
+});
