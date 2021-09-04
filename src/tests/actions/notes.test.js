@@ -2,16 +2,32 @@
 
 import configureStore from 'redux-mock-store' //ES6 modules
 import thunk from 'redux-thunk'
-import { startNewNote, startSaveNote } from '../../actions/notes'
+import { startNewNote, startSaveNote, startUpLoading } from '../../actions/notes'
 import { db } from '../../firebase/firebase-config'
+import { fileUpload } from '../../helpers/fileUpload'
 import { types } from '../../types/types'
- 
+
+jest.mock('../../helpers/fileUpload', () => ({
+  fileUpload: jest.fn( () => {
+    return Promise.resolve('https://hola-mundo.com/cosa.jpg')
+  })
+}))
+
 const middlewares = [thunk] //estamos usando thunk
 const mockStore = configureStore(middlewares)
+
+global.scrollTo = jest.fn();
 
 const initState = {
   auth: {
     uid: 'TESTING'
+  },
+  notes: {
+    active: {
+       id: '1Hsoh0zDLaKl9pp6xBIE',
+       title: 'Hola',
+       body: 'Mundo'
+    }
   }
 }
 
@@ -101,6 +117,18 @@ describe('Pruebas con las acciones de notes', () => {
     const doc = await db.doc(`TESTING/journal/notes/${ note.id }`).get();
 
     expect( doc.data().title ).toBe( note.title )
+
+  })
+  
+  test('Start Uploading, debe de actualizar el URL de entrie', async () => {
+    
+    const file = new File([], 'foto.jpg') // Aqui hay un error por que jest no deja pasar un file erroneo, por el comentario en la linea 1
+                                          // Sin embargo, se puede crear un archivo independiente para hacerlo
+    await store.dispatch( startUpLoading(file) )
+
+    const docRef = await db.doc('/TESTING/journal/notes/1Hsoh0zDLaKl9pp6xBIE').get()
+
+    expect(docRef.data().url).toBe('https://hola-mundo.com/cosa.jpg')
 
   })
   

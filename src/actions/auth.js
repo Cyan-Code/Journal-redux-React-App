@@ -9,7 +9,7 @@ import { noteLogout } from './notes';
 export const startLoginEmailPassword = (email, password) => {
   return (dispatch) => {
     dispatch( startLoading() )
-    firebase.auth().signInWithEmailAndPassword(email, password)
+    return firebase.auth().signInWithEmailAndPassword(email, password)
       .then( async ({ user })=>{
         await dispatch( login(user.uid, user.displayName) )
         dispatch(finishLoading())
@@ -48,15 +48,6 @@ export const startRegisterEmailPassword = (email, password, name) => {
   }
 }
 
-export const login = (uid, displayName) => ({
-    type: types.login,
-    payload: {
-      uid,
-      displayName
-    }
-  }
-)
-
 export const startLogout = () => {
   return async (dispatch) => {
     await firebase.auth().signOut()
@@ -65,6 +56,15 @@ export const startLogout = () => {
     dispatch( noteLogout() )
   }
 }
+
+export const login = (uid, displayName) => ({
+    type: types.login,
+    payload: {
+      uid,
+      displayName
+    }
+  }
+)
 
 export const logout = () => ({
   type: types.logout
