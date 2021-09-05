@@ -36,7 +36,7 @@ export const RegisterScreen = () => {
       dispatch(uiSetError('name is required'))
       return false;
     } else if (!validator.isEmail( email )) {
-      dispatch(uiSetError('email is not email'))
+      dispatch(uiSetError('Email is not Valid'))
       return false
     } else if (password !== password2 || password.length < 5) {
       dispatch(uiSetError('password is wrong'))
